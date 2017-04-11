@@ -1,0 +1,17 @@
+import Firebase from 'firebase'
+
+const config = {
+  apiKey: '...',
+  authDomain: '...',
+  databaseURL: '...',
+  projectId: '...',
+  storageBucket: '...',
+  messagingSenderId: '...'
+}
+
+let app = Firebase.initializeApp(config)
+
+export default {
+  app: app,
+  db: app.database()
+}
