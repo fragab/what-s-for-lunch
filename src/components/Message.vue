@@ -1,13 +1,17 @@
 <template>
   <div class="block">
-    <div class="notification is-danger" v-for="errorMessage in errorMessages">
-      <button class="delete" v-on:click.prevent="errorMessages = []"></button>
+    <transition-group name="fade" mode="out-in">
+    <div class="notification is-danger" v-for="(errorMessage, index) in errorMessages" key="errors">
+      <button class="delete" v-on:click.prevent="errorMessages.splice(index, 1)"></button>
       {{ errorMessage }}
     </div>
-    <div class="notification is-success" v-for="infoMessage in infoMessages">
+    </transition-group>
+    <transition-group name="fade" mode="out-in">
+    <div class="notification is-success" v-for="infoMessage in infoMessages" key="infos">
       <button class="delete" v-on:click.prevent="infoMessages = []"></button>
       {{ infoMessage }}
     </div>
+    </transition-group>
   </div>
 </template>
 
