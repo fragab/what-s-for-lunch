@@ -10,7 +10,7 @@
     </div>
     <div class="columns container">
       <div v-if="!user" class="column is-half is-offset-one-quarter">
-        <div class="box has-text-centered">
+        <div class="box has-text-centered login-box">
           <h1>Connexion</h1>
           <form @submit.prevent="signInWithPassword()">
             <div class="field">
@@ -88,6 +88,7 @@ import restaurantSelected from './RestaurantSelected.vue'
 import firebaseApi from '../api/firebase.js'
 
 var moment = require('moment')
+var anime = require('animejs')
 
 let app = firebaseApi.app
 let db = firebaseApi.db
@@ -116,11 +117,11 @@ export default {
       user: null
     }
   },
-  created: function () {
+  created () {
     this.$root.$on('signOut', this.signOut)
     this.$on('setRestaurant', (restaurant) => this.setRestaurant(restaurant))
   },
-  beforeDestroy: function () {
+  beforeDestroy () {
     this.$root.$off('signOut', this.signOut)
     this.$off('setRestaurant', (restaurant) => this.setRestaurant(restaurant))
   },
@@ -129,6 +130,12 @@ export default {
       return moment().locale('fr')
     },
     setRestaurant (restaurant) {
+      anime({
+        targets: ['.logo'],
+        rotate: '1turn',
+        easing: 'easeInOutQuart',
+        direction: 'reverse'
+      })
       this.selectedRestaurant = restaurant
       this.selectedPlace = null
     },
