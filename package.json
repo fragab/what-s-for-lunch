@@ -10,6 +10,7 @@
     "lint": "eslint --ext .js,.vue src"
   },
   "dependencies": {
+    "animejs": "^2.0.2",
     "bulma": "^0.4.0",
     "firebase": "^3.7.4",
     "moment": "^2.18.1",
