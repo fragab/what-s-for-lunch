@@ -1,10 +1,58 @@
-@import "~bulma/sass/utilities/_all.sass"
+=btn-shadow($color)
+  background-image: linear-gradient(180deg, lighten($color, 15%) 0%, $color 60%, darken($color, 4%) 100%)
+  filter: none
+  border: 1px solid darken($color, 10%)
 
-.nav {position: fixed !important;top: 0;left: 0;right: 0;}
+$color1: hsl(201%, 98%, 41%)
+$color2: hsl(66%, 70%, 54%)
+$color3: hsl(186%, 93%, 32%)
+$color4: hsl(235%, 30%, 46%)
+$color5: hsl(154%, 7%, 19%)
 
-.fade-enter-active, .fade-leave-active {transition: opacity .5s}
-.fade-enter, .fade-leave-to {opacity: 0}
+$primary: $color1
+$info: $color4
+$success: $color5
+$warning: $color3
+$danger: hsl(0%, 100%, 38%)
 
-.picto {width: 16px; height: 16px;}
+@import "~bulma/sass/utilities/functions.sass"
+
+$primary-invert:  findColorInvert($primary)
+$info-invert:     findColorInvert($info)
+$success-invert:  findColorInvert($success)
+$warning-invert:  findColorInvert($danger)
+$danger-invert:   findColorInvert($danger)
+
+.nav
+  position: fixed !important
+  top: 0
+  left: 0
+  right: 0
+
+.fade-enter-active,
+.fade-leave-active
+  transition: opacity .5s
+
+.fade-enter,
+.fade-leave-to
+  opacity: 0
+
+.picto
+  width: 16px
+  height: 16px
 
 @import "~bulma"
+
+.box
+  background-color: $white-ter
+
+.button
+  &.is-primary
+  +btn-shadow($primary)
+
+@each $name, $pair in $colors
+  $color: nth($pair, 1)
+  $color-invert: nth($pair, 2)
+  &.is-#{$name}
+    &:not(.is-outlined):not(.is-inverted)
+      +btn-shadow($color)

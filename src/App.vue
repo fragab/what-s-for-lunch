@@ -3,7 +3,9 @@
     <navbar></navbar>
     <message></message>
     <div class="container has-text-centered">
+      <transition name="fade">
       <router-view></router-view>
+      </transition>
     </div>
     <navfooter></navfooter>
   </div>
@@ -21,6 +23,19 @@ export default {
     navbar,
     navfooter,
     message
+  },
+  data () {
+    return {
+      user: null
+    }
+  },
+  created () {
+    this.$root.$on('signedIn', (user) => { this.user = user })
+    this.$root.$on('signedOut', () => { this.user = null })
+  },
+  beforeDestroy () {
+    this.$root.$on('signIn', () => {})
+    this.$root.$on('signedOut', () => {})
   }
 }
 </script>

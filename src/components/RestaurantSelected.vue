@@ -1,5 +1,5 @@
 <template>
-  <section class="hero is-primary">
+  <section class="hero is-success">
     <div class="hero-body">
       <div class="container">
         <h1 class="title">
@@ -16,7 +16,7 @@ export default {
   props: ['selectedRestaurant'],
   methods: {
     unsetRestaurant () {
-      this.$parent.$emit('setRestaurant', null)
+      this.$parent.$emit('unsetRestaurant')
     }
   }
 }

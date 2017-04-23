@@ -1,16 +1,8 @@
 <template>
   <div class="content">
-    <div class="notification is-danger" v-if="errorMessage">
-      <button class="delete" v-on:click.prevent="errorMessage = ''"></button>
-      {{ errorMessage }}
-    </div>
-    <div class="notification is-success" v-if="infoMessage">
-      <button class="delete" v-on:click.prevent="infoMessage = ''"></button>
-      {{ infoMessage }}
-    </div>
     <div class="columns container">
       <div v-if="!user" class="column is-half is-offset-one-quarter">
-        <div class="box has-text-centered login-box">
+        <div class="box has-text-centered">
           <h1>Connexion</h1>
           <form @submit.prevent="signInWithPassword()">
             <div class="field">
@@ -25,7 +17,7 @@
             </div>
             <div class="field">
               <p class="control">
-                <button class="button is-primary">Se connecter</button>
+                <button :class="['button', 'is-primary', {'is-loading': isSigningIn}]">Se connecter</button>
               </p>
             </div>
             <p>
@@ -34,6 +26,10 @@
           </form>
         </div>
       </div>
+        <div v-else-if="this.hasVoted()">
+        Tu as choisi :
+          {{ this.userChoice()[0].restaurant.name }} / {{ this.userChoice()[0].place }}
+        </div>
         <div v-else class="container">
           <h2>Tu veux manger quoi aujourd'hui ?</h2>
             <transition name="fade" mode="out-in">
@@ -42,38 +38,25 @@
             <restaurant-selected v-if="selectedRestaurant != null" :selected-restaurant="selectedRestaurant"></restaurant-selected>
           <template v-if="selectedRestaurant != null">
             <h2>Où ?</h2>
-            <ul class="buttons">
-              <template v-if="selectedRestaurant.takeaway == 'yes'">
-              <template v-for="place in places">
-              <li v-bind:class="{ on: selectedPlace == place['.key'] }">
-                <label>
-                  <input type="radio" v-model="selectedPlace" :value="place['.key']" /> {{ place.name }} <img alt="A emporter" title="A emporter" src="../assets/takeaway.svg" class="picto" />
-                </label>
-              </li>
-              </template>
-              </template><li :class="{ on: selectedPlace == 'on_the_spot' }" v-if="selectedRestaurant.on_the_spot == 'yes'">
-                <label>
-                  <input type="radio" v-model="selectedPlace" value="on_the_spot" /><img alt="Sur place" title="Sur place" src="../assets/on-the-spot.svg" class="picto" /> Sur place
-                </label>
-              </li>
-            </ul>
-            <br />
-            <input type="submit" value="Valider mon choix" />
+            <div class="container is-fluid">
+              <div class="columns is-multiline">
+                <template v-if="selectedRestaurant.takeaway">
+                <div class="column is-4" v-for="place in places">
+                  <a v-on:click.prevent="setPlace(place.name)" :class="['button', 'is-large', 'is-primary']" style="width: 100%;">
+                    {{ place.name }} <img alt="A emporter" title="A emporter" src="../assets/takeaway.svg" class="picto" />
+                  </a>
+                </div>
+                </template>
+                <div class="column is-4" v-if="selectedRestaurant.on_the_spot">
+                  <a v-on:click.prevent="setPlace('Sur place')" :class="['button', 'is-large', 'is-primary']" style="width: 100%;">
+                    Sur place <img alt="Sur place" title="Sur place" src="../assets/on-the-spot.svg" class="picto" />
+                  </a>
+                </div>
+              </div>
+            </div>
           </template>
-          <ul class="wishes">
-          <template v-for="wish in wishes">
-            <li>
-              {{ wish['.key'] | moment }}
-              <ul>
-              <template v-for="restaurant in wish.restaurants">
-                <li>
-                  {{ restaurant.name }} - {{ restaurant.takeaway }} <img alt="A emporter" title="A emporter" src="../assets/takeaway.svg" class="picto" /> - {{ restaurant.on_the_spot }} <img alt="Sur place" title="Sur place" src="../assets/on-the-spot.svg" class="picto" />
-                </li>
-              </template>
-              </ul>
-            </li>
-          </template>
-          </ul>
+          <br />
+          <button class="button is-primary"@click.prevent="saveWish()" :disabled="selectedPlace == null">Valider mon choix</button>
         </div>
       </transition-group>
     </div>
@@ -81,7 +64,6 @@
 </template>
 
 <script>
-
 // import Firebase from 'firebase'
 import restaurantsList from './RestaurantsList.vue'
 import restaurantSelected from './RestaurantSelected.vue'
@@ -99,10 +81,12 @@ export default {
     restaurantsList,
     restaurantSelected
   },
-  firebase: {
-    restaurants: db.ref('restaurants').orderByChild('name'),
-    wishes: db.ref('wishes').limitToLast(1),
-    places: db.ref('places').orderByChild('name')
+  firebase () {
+    return {
+      restaurants: db.ref('restaurants/validated').orderByChild('name'),
+      wishes: db.ref('wishes/' + moment().format('YYYY-MM-DD')),
+      places: db.ref('places').orderByChild('name')
+    }
   },
   data () {
     return {
@@ -112,18 +96,29 @@ export default {
       password: '',
       confirmPassword: '',
       wantsToSignUp: false,
-      errorMessage: '',
-      infoMessage: '',
-      user: null
+      isSigningIn: false,
+      user: firebaseApi.user
     }
   },
   created () {
     this.$root.$on('signOut', this.signOut)
     this.$on('setRestaurant', (restaurant) => this.setRestaurant(restaurant))
+    this.$on('unsetRestaurant', () => {
+      this.selectedRestaurant = null
+      this.selectedPlace = null
+    })
   },
   beforeDestroy () {
     this.$root.$off('signOut', this.signOut)
     this.$off('setRestaurant', (restaurant) => this.setRestaurant(restaurant))
+    this.$off('unsetRestaurant', () => '')
+  },
+  mounted () {
+    app.auth().onAuthStateChanged((userData) => {
+      if (userData) {
+        this.user = userData
+      }
+    })
   },
   methods: {
     moment () {
@@ -139,26 +134,60 @@ export default {
       this.selectedRestaurant = restaurant
       this.selectedPlace = null
     },
+    unsetRestaurant () {
+      this.selectedRestaurant = null
+      this.selectedPlace = null
+    },
     signInWithPassword () {
+      this.isSigningIn = true
       app.auth().signInWithEmailAndPassword(this.email, this.password)
       .then((userData) => {
         this.onSignedIn(userData)
       })
-      .catch((error) => { this.$root.$emit('addError', error.message) })
-      this.password = 'DTC'
+      .catch((error) => {
+        this.$root.$emit('addError', error.message)
+        this.isSigningIn = false
+      })
+      this.password = ''
     },
     signOut () {
       app.auth().signOut()
       .then(() => {
-        this.user = null
-        this.infoMessage = 'Déconnecté'
+        firebaseApi.setUser(null)
         this.$root.$emit('signedOut')
       })
       .catch((error) => { this.$root.$emit('addError', error.message) })
     },
     onSignedIn (userData) {
-      this.user = userData
       this.$root.$emit('signedIn', userData)
+      firebaseApi.setUser(userData)
+      this.isSigningIn = false
+    },
+    saveWish () {
+      if (this.hasVoted()) {
+        this.$root.$emit('addError', 'Déjà voté !')
+        return false
+      }
+      var selectedRestaurant = this.selectedRestaurant
+      selectedRestaurant.uid = selectedRestaurant['.key']
+      delete selectedRestaurant['.key']
+
+      var user = {
+        uid: this.user.uid
+      }
+      user.displayName = this.user.displayName || this.user.email
+      console.log(firebaseApi.user)
+
+      var wish = {
+        date: moment().format(),
+        place: this.selectedPlace,
+        restaurant: selectedRestaurant,
+        user: user
+      }
+
+      this.$firebaseRefs.wishes.push(wish)
+      .then(() => { this.$root.$emit('addInfo', 'Choix sauvegardé !') })
+      .catch((error) => { this.$root.$emit('addError', error.message) })
     },
     setDisplayName () {
       var user = app.auth().currentUser
@@ -169,6 +198,19 @@ export default {
       )
       .then(() => { this.infoMessage = 'Nom à afficher modifié' })
       .catch((error) => { this.$root.$emit('addError', error.message) })
+    },
+    setPlace (place) {
+      this.selectedPlace = place
+    },
+    userChoice () {
+      return this.wishes.filter(
+        (wish) => {
+          return wish.user.uid === this.user.uid
+        }
+      )
+    },
+    hasVoted () {
+      return this.userChoice().length > 0
     }
   },
   filters: {
@@ -178,86 +220,3 @@ export default {
   }
 }
 </script>
-
-<!-- Add 'scoped' attribute to limit CSS to this component only -->
-<style scoped>
-h1, h2 {
-  font-weight: normal;
-}
-
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-
-ul.buttons {
-  color: #fff;
-  display: inline-block;
-  border-radius: 4px 4px 4px 4px;
-  -moz-border-radius: 4px 4px 4px 4px;
-  -webkit-border-radius: 4px 4px 4px 4px;
-
-}
-
-ul li {
-  padding: 5px 8px;
-  margin: 0;
-}
-
-ul.buttons li {
-  border-right: 1px solid #fff;
-  color: #666;
-  background: #aaa;
-}
-
-ul.buttons li input {
-  display: none;
-}
-
-ul.buttons li.on {
-  background: #00b7ea; /* Old browsers */
-  background: -moz-linear-gradient(top, #00b7ea 0%, #009ec3 100%); /* FF3.6-15 */
-  background: -webkit-linear-gradient(top, #00b7ea 0%,#009ec3 100%); /* Chrome10-25,Safari5.1-6 */
-  background: linear-gradient(to bottom, #00b7ea 0%,#009ec3 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
-  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00b7ea', endColorstr='#009ec3',GradientType=0 ); /* IE6-9 */
-  color: #fff;
-}
-
-li {
-  display: inline-block;
-  /*margin: 0 10px;*/
-}
-
-ul.buttons li:first-child {
-  border-radius: 4px 0 0 4px;
-  -moz-border-radius: 4px 0 0 4px;
-  -webkit-border-radius: 4px 0 0 4px;
-  padding-left: 12px;
-}
-
-ul.buttons li:last-child {
-  border-radius: 0 4px 4px 0;
-  -moz-border-radius: 0 4px 4px 0;
-  -webkit-border-radius: 0 4px 4px 0;
-  padding-right: 12px;
-  border-right: none;
-}
-
-ul.buttons li:only-child {
-  border-radius: 4px;
-  -moz-border-radius: 4px;
-  -webkit-border-radius: 4px;
-  padding-right: 12px;
-  border-right: none;
-}
-
-ul.wishes li {
-  display: block;
-}
-
-input[type=submit] {
-  padding: 10px;
-  font-size: 1.6em;
-  font-weight: bold;
-}
-</style>
