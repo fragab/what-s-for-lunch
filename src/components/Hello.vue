@@ -79,7 +79,8 @@ export default {
   name: 'hello',
   components: {
     restaurantsList,
-    restaurantSelected
+    restaurantSelected,
+    userData: null
   },
   firebase () {
     return {
@@ -153,14 +154,14 @@ export default {
     signOut () {
       app.auth().signOut()
       .then(() => {
-        firebaseApi.setUser(null)
+        this.userData = null
         this.$root.$emit('signedOut')
       })
       .catch((error) => { this.$root.$emit('addError', error.message) })
     },
     onSignedIn (userData) {
       this.$root.$emit('signedIn', userData)
-      firebaseApi.setUser(userData)
+      this.userData = userData
       this.isSigningIn = false
     },
     saveWish () {
@@ -173,10 +174,9 @@ export default {
       delete selectedRestaurant['.key']
 
       var user = {
-        uid: this.user.uid
+        uid: this.userData.uid
       }
-      user.displayName = this.user.displayName || this.user.email
-      console.log(firebaseApi.user)
+      user.displayName = this.userData.displayName || this.userData.email
 
       var wish = {
         date: moment().format(),

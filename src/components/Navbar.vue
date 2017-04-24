@@ -60,14 +60,15 @@ export default {
   },
   computed: {
     displayName () {
-      if (firebaseApi.user && firebaseApi.user.displayName) {
-        return 'Hello ' + firebaseApi.user.displayName
+      if (this.userData && this.userData.displayName) {
+        return 'Hello ' + this.userData.displayName
       }
       return 'Nom non défini'
     }
   },
   methods: {
     signOut () {
+      this.userData = null
       this.$root.$emit('signOut')
     },
     appear (el, done) {
