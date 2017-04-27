@@ -2,7 +2,7 @@
   <div class="columns container">
     <div class="column is-10 is-offset-1">
       <div class="box has-text-centered">
-        <form @submit.prevent="signUpWithPassword()">
+        <form @submit.prevent="updateProfile">
           <div class="field is-horizontal">
             <div class="field-label is-medium">
               <label class="label">Email</label>
@@ -10,7 +10,7 @@
             <div class="field-body">
               <div class="field">
                 <div class="control">
-                  <input class="input is-medium" type="text" v-model="email" />
+                  <input class="input is-medium" type="text" v-model="email" disabled="disabled" />
                 </div>
               </div>
             </div>
@@ -92,15 +92,26 @@ import firebaseApi from '../api/firebase.js'
 let app = firebaseApi.app
 
 export default {
-  name: 'signup',
+  name: 'profile',
   data () {
     return {
       email: '',
       password: '',
       confirmPassword: '',
       firstname: '',
-      lastname: ''
+      lastname: '',
+      useData: null
     }
+  },
+  mounted () {
+    app.auth().onAuthStateChanged((userData) => {
+      if (userData) {
+        this.userData = userData
+        this.email = this.userData.email
+        return
+      }
+      this.$router.push('/')
+    })
   },
   computed: {
     displayName () {
@@ -108,14 +119,21 @@ export default {
     }
   },
   methods: {
-    signUpWithPassword () {
-      if (this.password !== this.confirmPassword) {
-        this.$root.$emit('addError', 'La confirmation du mot de passe est incorrect')
-        return
-      }
-      app.auth().createUserWithEmailAndPassword(this.email, this.password)
-      .then(() => this.signInWithPassword())
+    updateProfile () {
+      var user = app.auth().currentUser
+      user.updateProfile(
+        {
+          displayName: this.displayName
+        }
+      )
+      .then(() => { this.$root.$emit('addInfo', 'Nom à afficher modifié : ' + this.displayName) })
       .catch((error) => { this.$root.$emit('addError', error.message) })
+
+      if (this.password === this.confirmPassword) {
+        user.updatePassword(this.password)
+        .then(() => this.$root.$emit('addInfo', 'Mot de passe modifié'))
+        .catch((error) => { this.$root.$emit('addError', error.message) })
+      }
     }
   }
 }

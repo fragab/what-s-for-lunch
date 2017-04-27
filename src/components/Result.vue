@@ -1,7 +1,7 @@
 <template>
   <div class="columns container">
     <div class="column is-10 is-offset-1">
-      <div class="box content">
+      <div class="box content is-large">
         <h1 class="has-text-centered">Resultat</h1>
         <ul v-if="result.length">
           <template v-for="wish in result">
@@ -10,7 +10,9 @@
           </li>
           </template>
         </ul>
-        <img v-else src="../assets/undefined.gif" alt="Personne n'a voté pour le moment" />
+        <div v-else class="has-text-centered">
+          <img src="../assets/undefined.gif" alt="Personne n'a voté pour le moment" />
+        </div>
       </div>
     </div>
   </div>

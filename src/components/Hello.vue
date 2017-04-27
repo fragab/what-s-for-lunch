@@ -1,7 +1,7 @@
 <template>
   <div class="content">
     <div class="columns container">
-      <div v-if="!user" class="column is-half is-offset-one-quarter">
+      <div v-if="!userData" class="column is-half is-offset-one-quarter">
         <div class="box has-text-centered">
           <h1>Connexion</h1>
           <form @submit.prevent="signInWithPassword()">
@@ -79,8 +79,7 @@ export default {
   name: 'hello',
   components: {
     restaurantsList,
-    restaurantSelected,
-    userData: null
+    restaurantSelected
   },
   firebase () {
     return {
@@ -98,7 +97,7 @@ export default {
       confirmPassword: '',
       wantsToSignUp: false,
       isSigningIn: false,
-      user: firebaseApi.user
+      userData: null
     }
   },
   created () {
@@ -117,7 +116,7 @@ export default {
   mounted () {
     app.auth().onAuthStateChanged((userData) => {
       if (userData) {
-        this.user = userData
+        this.userData = userData
       }
     })
   },
@@ -155,7 +154,6 @@ export default {
       app.auth().signOut()
       .then(() => {
         this.userData = null
-        this.$root.$emit('signedOut')
       })
       .catch((error) => { this.$root.$emit('addError', error.message) })
     },
@@ -189,23 +187,13 @@ export default {
       .then(() => { this.$root.$emit('addInfo', 'Choix sauvegardé !') })
       .catch((error) => { this.$root.$emit('addError', error.message) })
     },
-    setDisplayName () {
-      var user = app.auth().currentUser
-      user.updateProfile(
-        {
-          displayName: this.displayName
-        }
-      )
-      .then(() => { this.infoMessage = 'Nom à afficher modifié' })
-      .catch((error) => { this.$root.$emit('addError', error.message) })
-    },
     setPlace (place) {
       this.selectedPlace = place
     },
     userChoice () {
       return this.wishes.filter(
         (wish) => {
-          return wish.user.uid === this.user.uid
+          return wish.user.uid === this.userData.uid
         }
       )
     },

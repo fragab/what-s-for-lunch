@@ -13,6 +13,7 @@
       </transition-group>
       <router-link to="/all" class="nav-item is-tab is-hidden-mobile">Voter</router-link>
       <router-link to="/restaurant" class="nav-item is-tab is-hidden-mobile">Proposer un restaurant</router-link>
+      <router-link to="/profile" class="nav-item is-tab is-hidden-mobile">Mon compte</router-link>
     </div>
     <span class="nav-toggle" @click="mobileMenuVisible=!mobileMenuVisible">
       <span></span>
@@ -55,6 +56,8 @@ export default {
     app.auth().onAuthStateChanged((userData) => {
       if (userData) {
         this.userData = userData
+      } else {
+        this.userData = null
       }
     })
   },
@@ -68,8 +71,12 @@ export default {
   },
   methods: {
     signOut () {
-      this.userData = null
-      this.$root.$emit('signOut')
+      app.auth().signOut()
+      .then(() => {
+        this.userData = null
+        this.$root.$emit('signOut')
+      })
+      .catch((error) => { this.$root.$emit('addError', error.message) })
     },
     appear (el, done) {
       var animation = anime({
