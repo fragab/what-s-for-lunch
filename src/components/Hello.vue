@@ -26,10 +26,17 @@
           </form>
         </div>
       </div>
-        <div v-else-if="this.hasVoted()">
-        Tu as choisi :
-          {{ this.userChoice()[0].restaurant.name }} / {{ this.userChoice()[0].place }}
-        </div>
+        <section v-else-if="this.hasVoted()" class="hero is-success">
+          <div class="hero-body">
+            <div class="container">
+              <div class="content">
+                <h1 class="title">
+                  Tu as choisi : {{ this.userChoice()[0].restaurant.name }} / {{ this.userChoice()[0].place }}
+                </h1>
+              </div>
+            </div>
+          </div>
+        </section>
         <div v-else class="container">
           <h2>Tu veux manger quoi aujourd'hui ?</h2>
             <transition name="fade" mode="out-in">
