@@ -1,9 +1,9 @@
 <template>
   <div class="columns container">
     <div class="column is-10 is-offset-1">
-      <div class="box has-text-centered">
+      <div class="box content">
+        <h1 class="has-text-centered">Resultat</h1>
         <ul v-if="result.length">
-          <h1>Resultat</h1>
           <template v-for="wish in result">
           <li>
             {{ wish.user.displayName }} - {{ wish.restaurant.name }} - {{ wish.place }}

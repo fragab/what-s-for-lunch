@@ -1,8 +1,8 @@
 <template>
   <div class="columns container">
     <div class="column is-10 is-offset-1">
-      <div class="box has-text-centered">
-        <h1>Proposer un restaurant</h1>
+      <div class="box content">
+        <h1 class="has-text-centered">Proposer un restaurant</h1>
         <form @submit.prevent="save()">
           <div class="field is-horizontal">
             <div class="field-label is-medium">

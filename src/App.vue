@@ -2,7 +2,7 @@
   <div id="app">
     <navbar></navbar>
     <message></message>
-    <div class="container has-text-centered">
+    <div class="container">
       <transition name="fade">
       <router-view></router-view>
       </transition>
