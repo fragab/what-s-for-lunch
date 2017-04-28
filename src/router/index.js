@@ -35,5 +35,6 @@ export default new Router({
       name: 'restaurant',
       component: Restaurant
     }
-  ]
+  ],
+  linkActiveClass: 'is-active'
 })
