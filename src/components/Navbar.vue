@@ -12,29 +12,39 @@
       </div>
       </transition-group>
       <router-link to="/all" class="nav-item is-tab is-hidden-mobile">Voter</router-link>
-      <router-link to="/restaurant" class="nav-item is-tab is-hidden-mobile">Proposer un restaurant</router-link>
-      <router-link to="/profile" class="nav-item is-tab is-hidden-mobile">Mon compte</router-link>
+      <router-link to="/restaurant" v-if="userData" class="nav-item is-tab is-hidden-mobile">Proposer un restaurant</router-link>
+      <router-link to="/profile" v-if="userData" class="nav-item is-tab is-hidden-mobile">Mon compte</router-link>
     </div>
     <span class="nav-toggle" @click="mobileMenuVisible=!mobileMenuVisible">
       <span></span>
       <span></span>
       <span></span>
     </span>
-    <div :class="['nav-right', 'nav-menu', {'is-active': mobileMenuVisible}]">
-      <router-link to="/" class="nav-item is-tab is-hidden-tablet">Home</router-link>
-      <router-link to="/all" class="nav-item is-tab is-hidden-tablet">Voter</router-link>
-      <router-link to="/profile" class="nav-item is-tab is-hidden-tablet">Mon compte</router-link>
-      <router-link to="/restaurant" class="nav-item is-tab is-hidden-tablet">Proposer un restaurant</router-link>
-      <a class="nav-item is-tab is-hidden-tablet" @click.prevent="signOut">Déconnexion</a>
-    </div>
-    <div class="nav-right is-hidden-mobile" v-if="userData">
-      <span class="nav-item">
+    <transition-group mode="in-out" name="fade">
+    <div :class="['nav-right', 'nav-menu', {'is-active': mobileMenuVisible}]" key="submenu">
+      <router-link to="/all" class="nav-item is-tab is-hidden-tablet">
+        <span @click="hideMobileMenu">
+          Voter
+        </span>
+      </router-link>
+      <router-link @click="hideMobileMenu" v-if="userData" to="/profile" class="nav-item is-tab is-hidden-tablet">
+        <span @click="hideMobileMenu">
+          Mon compte
+        </span>
+      </router-link>
+      <router-link @click="hideMobileMenu" v-if="userData" to="/restaurant" class="nav-item is-tab is-hidden-tablet">
+        <span @click="hideMobileMenu">
+          Proposer un restaurant
+        </span>
+      </router-link>
+      <span class="nav-item is-hidden-mobile" v-if="userData">
         <h2><router-link to="/profile">{{ displayName }}</router-link></h2>
       </span>
-      <span class="nav-item is-hidden-mobile" @click.prevent="signOut">
-        <a class="button is-light">Déconnexion</a>
+      <span class="nav-item" @click.prevent="signOut" v-if="userData">
+        <a class="button is-primary">Déconnexion</a>
       </span>
     </div>
+    </transition-group>
   </nav>
 </template>
 
@@ -70,6 +80,9 @@ export default {
     }
   },
   methods: {
+    hideMobileMenu () {
+      this.mobileMenuVisible = false
+    },
     signOut () {
       app.auth().signOut()
       .then(() => {

@@ -71,7 +71,6 @@
 </template>
 
 <script>
-// import Firebase from 'firebase'
 import restaurantsList from './RestaurantsList.vue'
 import restaurantSelected from './RestaurantSelected.vue'
 import firebaseApi from '../api/firebase.js'
