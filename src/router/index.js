@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Hello from '@/components/Hello'
+import Login from '@/components/Login'
 import Signup from '@/components/Signup'
 import Profile from '@/components/Profile'
 import Restaurant from '@/components/Restaurant'
@@ -14,6 +15,11 @@ export default new Router({
       path: '/',
       name: 'result',
       component: Result
+    },
+    {
+      path: '/login',
+      name: 'login',
+      component: Login
     },
     {
       path: '/all',

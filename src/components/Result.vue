@@ -2,7 +2,9 @@
   <div class="columns container">
     <div class="column is-10 is-offset-1">
       <div class="box content is-large">
-        <h1 class="has-text-centered">Resultat</h1>
+        <h1 class="has-text-centered">Résultat</h1>
+        <div v-if="loading" class="loader"></div>
+        <template v-else>
         <ul v-if="result.length">
           <template v-for="wish in result">
           <li>
@@ -13,6 +15,7 @@
         <div v-else class="has-text-centered">
           <img src="../assets/undefined.gif" alt="Personne n'a voté pour le moment" />
         </div>
+        </template>
       </div>
     </div>
   </div>
@@ -27,9 +30,17 @@ let db = firebaseApi.db
 
 export default {
   name: 'result',
+  data () {
+    return {
+      loading: true
+    }
+  },
   firebase () {
     return {
-      wishes: db.ref('wishes/' + moment().format('YYYY-MM-DD'))
+      wishes: {
+        source: db.ref('wishes/' + moment().format('YYYY-MM-DD')),
+        readyCallback () { this.loading = false }
+      }
     }
   },
   computed: {

@@ -1,71 +1,45 @@
 <template>
   <div class="content">
     <div class="columns container">
-      <div v-if="!userData" class="column is-half is-offset-one-quarter">
-        <div class="box has-text-centered">
-          <h1>Connexion</h1>
-          <form @submit.prevent="signInWithPassword()">
-            <div class="field">
-              <div class="control">
-                <input type="text" placeholder="email" class="input is-medium" v-model="email" />
-              </div>
-            </div>
-            <div class="field">
-              <p class="control">
-                <input type="password" placeholder="password" class="input is-medium" v-model="password" />
-              </p>
-            </div>
-            <div class="field">
-              <p class="control">
-                <button :class="['button', 'is-primary', {'is-loading': isSigningIn}]">Se connecter</button>
-              </p>
-            </div>
-            <p>
-              <router-link to="signup">Créer un compte</router-link>
-            </p>
-          </form>
-        </div>
-      </div>
-        <section v-else-if="this.hasVoted()" class="hero is-success">
-          <div class="hero-body">
-            <div class="container">
-              <div class="content">
-                <h1 class="title">
-                  Tu as choisi : {{ this.userChoice()[0].restaurant.name }} / {{ this.userChoice()[0].place }}
-                </h1>
-              </div>
+      <section v-if="this.hasVoted()" class="hero is-success">
+        <div class="hero-body">
+          <div class="container">
+            <div class="content">
+              <h1 class="title">
+                Tu as choisi : {{ this.userChoice()[0].restaurant.name }} / {{ this.userChoice()[0].place }}
+              </h1>
             </div>
           </div>
-        </section>
-        <div v-else class="container">
-          <h2>Tu veux manger quoi aujourd'hui ?</h2>
-            <transition name="fade" mode="out-in">
-              <restaurants-list v-if="selectedRestaurant == null" :selected-restaurant="selectedRestaurant" :restaurants="restaurants" key="list"></restaurants-list>
-            </transition>
-            <restaurant-selected v-if="selectedRestaurant != null" :selected-restaurant="selectedRestaurant"></restaurant-selected>
-          <template v-if="selectedRestaurant != null">
-            <h2>Où ?</h2>
-            <div class="container is-fluid">
-              <div class="columns is-multiline">
-                <template v-if="selectedRestaurant.takeaway">
-                <div class="column is-4" v-for="place in places">
-                  <a v-on:click.prevent="setPlace(place.name)" :class="['button', 'is-large', 'is-primary']" style="width: 100%;">
-                    {{ place.name }} <img alt="A emporter" title="A emporter" src="../assets/takeaway.svg" class="picto" />
-                  </a>
-                </div>
-                </template>
-                <div class="column is-4" v-if="selectedRestaurant.on_the_spot">
-                  <a v-on:click.prevent="setPlace('Sur place')" :class="['button', 'is-large', 'is-primary']" style="width: 100%;">
-                    Sur place <img alt="Sur place" title="Sur place" src="../assets/on-the-spot.svg" class="picto" />
-                  </a>
-                </div>
-              </div>
-            </div>
-          </template>
-          <br />
-          <button class="button is-primary"@click.prevent="saveWish()" :disabled="selectedPlace == null">Valider mon choix</button>
         </div>
-      </transition-group>
+      </section>
+      <div v-else>
+      <h2>Tu veux manger quoi aujourd'hui ?</h2>
+      <transition name="fade" mode="out-in">
+        <restaurants-list v-if="selectedRestaurant == null" :selected-restaurant="selectedRestaurant" :restaurants="restaurants" key="list"></restaurants-list>
+      </transition>
+      <restaurant-selected v-if="selectedRestaurant != null" :selected-restaurant="selectedRestaurant"></restaurant-selected>
+      <template v-if="selectedRestaurant != null">
+      <h2>Où ?</h2>
+      <div class="container is-fluid">
+        <div class="columns is-multiline">
+          <template v-if="selectedRestaurant.takeaway">
+          <div class="column is-4" v-for="place in places">
+            <a v-on:click.prevent="setPlace(place.name)" :class="['button', 'is-large', 'is-primary']" style="width: 100%;">
+                {{ place.name }} <img alt="A emporter" title="A emporter" src="../assets/takeaway.svg" class="picto" />
+            </a>
+          </div>
+          </template>
+          <div class="column is-4" v-if="selectedRestaurant.on_the_spot">
+            <a v-on:click.prevent="setPlace('Sur place')" :class="['button', 'is-large', 'is-primary']" style="width: 100%;">
+                Sur place <img alt="Sur place" title="Sur place" src="../assets/on-the-spot.svg" class="picto" />
+            </a>
+          </div>
+        </div>
+      </div>
+      </template>
+      <br />
+      <button class="button is-primary"@click.prevent="saveWish()" :disabled="selectedPlace == null">Valider mon choix</button>
+      </div>
     </div>
   </div>
 </template>
@@ -98,15 +72,17 @@ export default {
     return {
       selectedRestaurant: null,
       selectedPlace: null,
-      email: '',
-      password: '',
-      confirmPassword: '',
-      wantsToSignUp: false,
-      isSigningIn: false,
       userData: null
     }
   },
   created () {
+    app.auth().onAuthStateChanged((userData) => {
+      if (userData) {
+        this.userData = userData
+        return
+      }
+      this.$router.push('/')
+    })
     this.$root.$on('signOut', this.signOut)
     this.$on('setRestaurant', (restaurant) => this.setRestaurant(restaurant))
     this.$on('unsetRestaurant', () => {
@@ -118,13 +94,6 @@ export default {
     this.$root.$off('signOut', this.signOut)
     this.$off('setRestaurant', (restaurant) => this.setRestaurant(restaurant))
     this.$off('unsetRestaurant', () => '')
-  },
-  mounted () {
-    app.auth().onAuthStateChanged((userData) => {
-      if (userData) {
-        this.userData = userData
-      }
-    })
   },
   methods: {
     moment () {
@@ -144,29 +113,8 @@ export default {
       this.selectedRestaurant = null
       this.selectedPlace = null
     },
-    signInWithPassword () {
-      this.isSigningIn = true
-      app.auth().signInWithEmailAndPassword(this.email, this.password)
-      .then((userData) => {
-        this.onSignedIn(userData)
-      })
-      .catch((error) => {
-        this.$root.$emit('addError', error.message)
-        this.isSigningIn = false
-      })
-      this.password = ''
-    },
     signOut () {
-      app.auth().signOut()
-      .then(() => {
-        this.userData = null
-      })
-      .catch((error) => { this.$root.$emit('addError', error.message) })
-    },
-    onSignedIn (userData) {
-      this.$root.$emit('signedIn', userData)
-      this.userData = userData
-      this.isSigningIn = false
+      this.userData = null
     },
     saveWish () {
       if (this.hasVoted()) {
@@ -199,7 +147,7 @@ export default {
     userChoice () {
       return this.wishes.filter(
         (wish) => {
-          return wish.user.uid === this.userData.uid
+          return this.userData && wish.user.uid === this.userData.uid
         }
       )
     },
