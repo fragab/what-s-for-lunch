@@ -5,7 +5,10 @@
         <h1 class="has-text-centered">Résultat</h1>
         <div v-if="loading" class="loader"></div>
         <template v-else>
-        <ul v-if="result.length">
+        <div v-if="isMonday()" class="has-text-centered">
+          <img src="../assets/bk.svg" />
+        </div>
+        <ul v-else-if="result.length">
           <template v-for="wish in result">
           <li>
             {{ wish.user.displayName }} - {{ wish.restaurant.name }} - {{ wish.place }}
@@ -41,6 +44,11 @@ export default {
         source: db.ref('wishes/' + moment().format('YYYY-MM-DD')),
         readyCallback () { this.loading = false }
       }
+    }
+  },
+  methods: {
+    isMonday () {
+      return moment().format('d') === '1'
     }
   },
   computed: {

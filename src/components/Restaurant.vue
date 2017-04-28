@@ -83,7 +83,8 @@ export default {
   },
   firebase () {
     return {
-      restaurants: db.ref('restaurants/toValidate')
+      // restaurants: db.ref('restaurants/toValidate')
+      restaurants: db.ref('restaurants/validated')
     }
   },
   methods: {

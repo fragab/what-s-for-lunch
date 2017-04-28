@@ -146,7 +146,10 @@ export default {
       db.ref('users/' + uid)
       .once('value')
       .then((snapshot) => {
-        this.userInfos = snapshot.val()
+        if (snapshot.val()) {
+          this.userInfos = snapshot.val()
+          return
+        }
       })
       .catch((error) => { this.$root.$emit('addError', error.message) })
     },
