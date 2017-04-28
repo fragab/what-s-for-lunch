@@ -56,7 +56,7 @@ let app = firebaseApi.app
 let db = firebaseApi.db
 
 export default {
-  name: 'hello',
+  name: 'choice',
   components: {
     restaurantsList,
     restaurantSelected

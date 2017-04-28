@@ -11,7 +11,7 @@
         </a>
       </div>
       </transition-group>
-      <router-link to="/all" v-if="userData" class="nav-item is-tab is-hidden-mobile">Voter</router-link>
+      <router-link to="/choice" v-if="userData" class="nav-item is-tab is-hidden-mobile">Voter</router-link>
       <router-link to="/restaurant" v-if="userData" class="nav-item is-tab is-hidden-mobile">Proposer un restaurant</router-link>
       <router-link to="/profile" v-if="userData" class="nav-item is-tab is-hidden-mobile">Mon compte</router-link>
     </div>
@@ -22,7 +22,7 @@
     </span>
     <transition-group mode="in-out" name="fade">
     <div :class="['nav-right', 'nav-menu', {'is-active': mobileMenuVisible}]" key="submenu">
-      <router-link v-if="userData" to="/all" class="nav-item is-tab is-hidden-tablet">
+      <router-link v-if="userData" to="/choice" class="nav-item is-tab is-hidden-tablet">
         <span @click="hideMobileMenu">
           Voter
         </span>

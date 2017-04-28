@@ -90,6 +90,7 @@
 import firebaseApi from '../api/firebase.js'
 
 let app = firebaseApi.app
+let db = firebaseApi.db
 
 export default {
   name: 'profile',
@@ -98,16 +99,21 @@ export default {
       email: '',
       password: '',
       confirmPassword: '',
-      firstname: '',
-      lastname: '',
-      useData: null
+      userData: {
+        uid: null
+      },
+      userInfos: {
+        firstname: '',
+        lastname: ''
+      }
     }
   },
-  mounted () {
+  beforeCreate () {
     app.auth().onAuthStateChanged((userData) => {
       if (userData) {
         this.userData = userData
         this.email = this.userData.email
+        this.loadUser()
         return
       }
       this.$router.push('/')
@@ -116,9 +122,34 @@ export default {
   computed: {
     displayName () {
       return this.firstname + ' ' + this.lastname
+    },
+    firstname: {
+      get () {
+        return this.userInfos.firstname
+      },
+      set (firstname) {
+        this.userInfos.firstname = firstname
+      }
+    },
+    lastname: {
+      get () {
+        return this.userInfos.lastname
+      },
+      set (lastname) {
+        this.userInfos.lastname = lastname
+      }
     }
   },
   methods: {
+    loadUser () {
+      var uid = app.auth().currentUser.uid
+      db.ref('users/' + uid)
+      .once('value')
+      .then((snapshot) => {
+        this.userInfos = snapshot.val()
+      })
+      .catch((error) => { this.$root.$emit('addError', error.message) })
+    },
     updateProfile () {
       var user = app.auth().currentUser
       user.updateProfile(
@@ -129,11 +160,16 @@ export default {
       .then(() => { this.$root.$emit('addInfo', 'Nom à afficher modifié : ' + this.displayName) })
       .catch((error) => { this.$root.$emit('addError', error.message) })
 
-      if (this.password === this.confirmPassword) {
+      if (this.password !== '' && this.password === this.confirmPassword) {
         user.updatePassword(this.password)
         .then(() => this.$root.$emit('addInfo', 'Mot de passe modifié'))
         .catch((error) => { this.$root.$emit('addError', error.message) })
       }
+
+      var uid = app.auth().currentUser.uid
+      db.ref('users').child(uid).set(this.userInfos)
+      .then(() => { this.$root.$emit('addInfo', 'Nom et prénom mis à jour') })
+      .catch((error) => { this.$root.$emit('addError', error.message) })
     }
   }
 }
