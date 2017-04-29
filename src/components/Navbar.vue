@@ -27,12 +27,12 @@
           Voter
         </span>
       </router-link>
-      <router-link @click="hideMobileMenu" v-if="userData" to="/profile" class="nav-item is-tab is-hidden-tablet">
+      <router-link @click="hideMobileMenu" v-if="userData" to="/profile" class="nav-item is-hidden-tablet">
         <span @click="hideMobileMenu">
           Mon compte
         </span>
       </router-link>
-      <router-link @click="hideMobileMenu" v-if="userData" to="/restaurant" class="nav-item is-tab is-hidden-tablet">
+      <router-link @click="hideMobileMenu" v-if="userData" to="/restaurant" class="nav-item is-hidden-tablet">
         <span @click="hideMobileMenu">
           Proposer un restaurant
         </span>

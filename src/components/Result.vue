@@ -3,7 +3,14 @@
     <div class="column is-10 is-offset-1">
       <div class="box content is-large">
         <h1 class="has-text-centered">Résultat</h1>
-        <div v-if="loading" class="loader"></div>
+        <div class="columns" v-if="!userData">
+          <div class="column is-half is-offset-one-quarter has-text-centered">
+          <router-link to="/login">
+            <a class="button is-primary">Connexion</a>
+          </router-link>
+          </div>
+        </div>
+        <div v-if="loading" class="loader has-text-centered"></div>
         <template v-else>
         <div v-if="isMonday()" class="has-text-centered">
           <img src="../assets/bk.svg" />
@@ -16,7 +23,7 @@
           </template>
         </ul>
         <div v-else class="has-text-centered">
-          <img src="../assets/undefined.gif" alt="Personne n'a voté pour le moment" />
+          <img src="../assets/undefined.gif" title="Personne n'a voté pour le moment" alt="Personne n'a voté pour le moment" />
         </div>
         </template>
       </div>
@@ -30,12 +37,14 @@ import firebaseApi from '../api/firebase.js'
 var moment = require('moment')
 
 let db = firebaseApi.db
+let app = firebaseApi.app
 
 export default {
   name: 'result',
   data () {
     return {
-      loading: true
+      loading: true,
+      userData: null
     }
   },
   firebase () {
@@ -45,6 +54,14 @@ export default {
         readyCallback () { this.loading = false }
       }
     }
+  },
+  created () {
+    app.auth().onAuthStateChanged((userData) => {
+      if (userData) {
+        this.userData = userData
+      }
+    })
+    this.$root.$on('signOut', () => { this.userData = null })
   },
   methods: {
     isMonday () {
