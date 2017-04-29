@@ -12,6 +12,13 @@
           <a href="http://bulma.io/" target="_blank">bulma</a> - 
           <a href="http://anime-js.com/" target="_blank">anime.js</a>
         </p>
+        <p>
+          Sources :
+          <a
+            href="https://github.com/fragab/what-s-for-lunch"
+            target="_blank"
+          >https://github.com/fragab/what-s-for-lunch</a>
+        </p>
       </div>
     </div>
   </footer>

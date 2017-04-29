@@ -12,7 +12,7 @@
       </div>
       </transition-group>
       <router-link to="/choice" v-if="userData" class="nav-item is-tab is-hidden-mobile">Voter</router-link>
-      <router-link to="/restaurant" v-if="userData" class="nav-item is-tab is-hidden-mobile">Proposer un restaurant</router-link>
+      <router-link to="/restaurant" v-if="userData" class="nav-item is-tab is-hidden-mobile">Proposer un nouveau restaurant</router-link>
       <router-link to="/profile" v-if="userData" class="nav-item is-tab is-hidden-mobile">Mon compte</router-link>
     </div>
     <span class="nav-toggle" @click="mobileMenuVisible=!mobileMenuVisible">
