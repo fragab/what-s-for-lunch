@@ -1,86 +1,93 @@
 <template>
-  <div class="columns container">
-    <div class="column is-10 is-offset-1">
-      <div class="box has-text-centered">
-        <form @submit.prevent="updateProfile">
-          <div class="field is-horizontal">
-            <div class="field-label is-medium">
-              <label class="label">Email</label>
-            </div>
-            <div class="field-body">
-              <div class="field">
-                <div class="control">
-                  <input class="input is-medium" type="text" v-model="email" disabled="disabled" />
+  <div class="section">
+    <div class="columns">
+      <div class="column is-10 is-offset-1">
+        <div class="content">
+          <h1>Mon compte</h1>
+        </div>
+        <div class="box has-text-centered">
+          <div class="content">
+            <form @submit.prevent="updateProfile">
+              <div class="field is-horizontal">
+                <div class="field-label is-medium">
+                  <label class="label">Email</label>
+                </div>
+                <div class="field-body">
+                  <div class="field">
+                    <div class="control">
+                      <input class="input is-medium" type="text" v-model="email" disabled="disabled" />
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
-          </div>
-          <div class="field is-horizontal">
-            <div class="field-label is-medium">
-              <label class="label">Prénom</label>
-            </div>
-            <div class="field-body">
-              <div class="field">
-                <div class="control">
-                  <input class="input is-medium" type="text" v-model="firstname" />
+              <div class="field is-horizontal">
+                <div class="field-label is-medium">
+                  <label class="label">Prénom</label>
+                </div>
+                <div class="field-body">
+                  <div class="field">
+                    <div class="control">
+                      <input class="input is-medium" type="text" v-model="firstname" />
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
-          </div>
-          <div class="field is-horizontal">
-            <div class="field-label is-medium">
-              <label class="label">Nom</label>
-            </div>
-            <div class="field-body">
-              <div class="field">
-                <div class="control">
-                  <input class="input is-medium" type="text" v-model="lastname" />
+              <div class="field is-horizontal">
+                <div class="field-label is-medium">
+                  <label class="label">Nom</label>
+                </div>
+                <div class="field-body">
+                  <div class="field">
+                    <div class="control">
+                      <input class="input is-medium" type="text" v-model="lastname" />
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
-          </div>
-          <div class="field is-horizontal">
-            <div class="field-label is-medium">
-              <label class="label">Nom affiché</label>
-            </div>
-            <div class="field-body">
-              <div class="field">
-                <div class="control">
-                  {{ displayName }}
+              <div class="field is-horizontal">
+                <div class="field-label is-medium">
+                  <label class="label">Nom affiché</label>
+                </div>
+                <div class="field-body">
+                  <div class="field">
+                    <div class="control">
+                      {{ displayName }}
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
-          </div>
-          <div class="field is-horizontal">
-            <div class="field-label is-medium">
-              <label class="label">Changer de mot de passe</label>
-            </div>
-            <div class="field-body">
-              <div class="field">
-                <div class="control">
-                  <input class="input is-medium" type="password" v-model="password" />
+              <div class="field is-horizontal">
+                <div class="field-label is-medium">
+                  <label class="label">Changer de mot de passe</label>
+                </div>
+                <div class="field-body">
+                  <div class="field">
+                    <div class="control">
+                      <input class="input is-medium" type="password" v-model="password" />
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
-          </div>
-          <div class="field is-horizontal">
-            <div class="field-label is-medium">
-              <label class="label">Confirmer le nouveau mot de passe</label>
-            </div>
-            <div class="field-body">
-              <div class="field">
-                <div class="control">
-                  <input class="input is-medium" type="password" v-model="confirmPassword" />
+              <div class="field is-horizontal">
+                <div class="field-label is-medium">
+                  <label class="label">Confirmer le nouveau mot de passe</label>
+                </div>
+                <div class="field-body">
+                  <div class="field">
+                    <div class="control">
+                      <input class="input is-medium" type="password" v-model="confirmPassword" />
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
+              <div class="field">
+                <p class="control">
+                  <button class="button is-primary">Mettre à jour mon profil</button>
+                </p>
+              </div>
+            </form>
           </div>
-          <div class="field">
-            <p class="control">
-              <button class="button is-primary">Mettre à jour mon profil</button>
-            </p>
-          </div>
-        </form>
+        </div>
       </div>
     </div>
   </div>

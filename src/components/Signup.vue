@@ -1,50 +1,53 @@
 <template>
-  <div class="columns container">
-    <div class="column is-10 is-offset-1">
-      <div class="box has-text-centered">
-        <form @submit.prevent="signUpWithPassword()">
-          <div class="field is-horizontal">
-            <div class="field-label is-medium">
-              <label class="label">Email</label>
-            </div>
-            <div class="field-body">
-              <div class="field">
-                <div class="control">
-                  <input class="input is-medium" type="text" v-model="email" />
+  <div class="section">
+    <div class="columns">
+      <div class="column is-10 is-offset-1">
+        <div class="content">
+          <h1>Inscription</h1>
+        </div>
+        <div class="box">
+          <form @submit.prevent="signUpWithPassword()">
+            <div class="field is-horizontal">
+              <div class="field-label is-medium">
+                <label class="label">Email</label>
+              </div>
+              <div class="field-body">
+                <div class="field">
+                  <div class="control">
+                    <input class="input is-medium" type="text" v-model="email" />
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-          <div class="field is-horizontal">
-            <div class="field-label is-medium">
-              <label class="label">Mot de passe</label>
-            </div>
-            <div class="field-body">
-              <div class="field">
-                <div class="control">
-                  <input class="input is-medium" type="password" v-model="password" />
+            <div class="field is-horizontal">
+              <div class="field-label is-medium">
+                <label class="label">Mot de passe</label>
+              </div>
+              <div class="field-body">
+                <div class="field">
+                  <div class="control">
+                    <input class="input is-medium" type="password" v-model="password" />
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-          <div class="field is-horizontal">
-            <div class="field-label is-medium">
-              <label class="label">Confirmer le mot de passe</label>
-            </div>
-            <div class="field-body">
-              <div class="field">
-                <div class="control">
-                  <input class="input is-medium" type="password" v-model="confirmPassword" />
+            <div class="field is-horizontal">
+              <div class="field-label is-medium">
+                <label class="label">Confirmer le mot de passe</label>
+              </div>
+              <div class="field-body">
+                <div class="field">
+                  <div class="control">
+                    <input class="input is-medium" type="password" v-model="confirmPassword" />
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-          <div class="field">
-            <p class="control">
+            <div class="field is-horizontal">
               <button class="button is-primary">Créer le compte</button>
-            </p>
-          </div>
-        </form>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
   </div>

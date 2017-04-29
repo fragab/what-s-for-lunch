@@ -22,21 +22,25 @@
     </span>
     <transition-group mode="in-out" name="fade">
     <div :class="['nav-right', 'nav-menu', {'is-active': mobileMenuVisible}]" key="submenu">
-      <router-link v-if="userData" to="/choice" class="nav-item is-tab is-hidden-tablet">
-        <span @click="hideMobileMenu">
+      <div @click="hideMobileMenu()">
+        <router-link v-if="userData" to="/choice" class="nav-item is-hidden-tablet">
           Voter
-        </span>
-      </router-link>
-      <router-link @click="hideMobileMenu" v-if="userData" to="/profile" class="nav-item is-hidden-tablet">
-        <span @click="hideMobileMenu">
-          Mon compte
-        </span>
-      </router-link>
-      <router-link @click="hideMobileMenu" v-if="userData" to="/restaurant" class="nav-item is-hidden-tablet">
-        <span @click="hideMobileMenu">
-          Proposer un restaurant
-        </span>
-      </router-link>
+        </router-link>
+      </div>
+      <div @click="hideMobileMenu()">
+        <router-link v-if="userData" to="/profile" class="nav-item is-hidden-tablet">
+          <div @click="hideMobileMenu()" class="is-fullwidth">
+            Mon compte
+          </div>
+        </router-link>
+      </div>
+      <div @click="hideMobileMenu()">
+        <router-link v-if="userData" to="/restaurant" class="nav-item is-hidden-tablet">
+          <div @click="hideMobileMenu()" class="is-fullwidth">
+            Proposer un restaurant
+          </div>
+        </router-link>
+      </div>
       <span class="nav-item is-hidden-mobile" v-if="userData">
         <h2><router-link to="/profile">{{ displayName }}</router-link></h2>
       </span>
