@@ -1,13 +1,12 @@
 <template>
-  <section class="hero is-success">
-    <div class="hero-body">
-      <div class="container">
-        <h1 class="title">
-          {{ selectedRestaurant.name }} <button v-on:click.prevent="unsetRestaurant" class="delete is-medium"></button>
-        </h1>
-      </div>
+  <div class="notification is-success">
+    <button v-on:click.prevent="unsetRestaurant" class="delete is-medium"></button>
+    <div class="container">
+      <h1 class="title">
+        {{ selectedRestaurant.name }}
+      </h1>
     </div>
-  </section>
+</div>
 </template>
 
 <script>

@@ -24,14 +24,36 @@
         <div class="columns is-multiline">
           <template v-if="selectedRestaurant.takeaway">
           <div class="column is-4" v-for="place in places">
-            <a v-on:click.prevent="setPlace(place.name)" :class="['button', 'is-large', 'is-primary']" style="width: 100%;">
+            <a
+              v-on:click.prevent="setPlace(place.name)"
+              :class="[
+                'button',
+                'is-large',
+                {
+                  'is-primary': place.name !== selectedPlace,
+                  'is-success': place.name === selectedPlace
+                }
+              ]"
+              style="width: 100%;"
+            >
                 {{ place.name }} <img alt="A emporter" title="A emporter" src="../assets/takeaway.svg" class="picto" />
             </a>
           </div>
           </template>
           <div class="column is-4" v-if="selectedRestaurant.on_the_spot">
-            <a v-on:click.prevent="setPlace('Sur place')" :class="['button', 'is-large', 'is-primary']" style="width: 100%;">
-                Sur place <img alt="Sur place" title="Sur place" src="../assets/on-the-spot.svg" class="picto" />
+            <a
+              v-on:click.prevent="setPlace('Sur place')"
+              :class="[
+                'button',
+                'is-large',
+                {
+                  'is-primary': 'Sur place' !== selectedPlace,
+                  'is-success': 'Sur place' === selectedPlace
+                }
+              ]"
+              style="width: 100%;"
+            >
+              Sur place <img alt="Sur place" title="Sur place" src="../assets/on-the-spot.svg" class="picto" />
             </a>
           </div>
         </div>
