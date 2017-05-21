@@ -15,7 +15,7 @@
             <ol>
               <template v-for="wish in result">
               <li>
-                {{ wish.user.displayName }} - {{ wish.restaurant.name }} - {{ wish.place }}
+                {{ wish.user.displayName }} - {{ wish.restaurant.name }} - {{ wish.place }} <button v-if="!canVote()" class="button is-primary" @click="addVote(wish)">J'suis ben d'accord</button>
               </li>
               </template>
             </ol>
@@ -72,6 +72,36 @@ export default {
   methods: {
     isMonday () {
       return moment().format('d') === '1'
+    },
+    canVote () {
+      return this.userData && this.wishes.filter(
+        wish => { return wish.user.uid === this.userData.uid }
+      ).length > 0
+    },
+    addVote (wish) {
+      if (this.canVote()) {
+        this.$root.$emit('addError', 'Tu n\'es pas connecté ou tu as déjà voté !')
+        return false
+      }
+      if (confirm(`Voter pour ${wish.restaurant.name} / ${wish.place} ?`)) {
+        var newWish = {
+          restaurant: wish.restaurant,
+          place: wish.place
+        }
+
+        var user = {
+          uid: this.userData.uid
+        }
+        user.displayName = this.userData.displayName || this.userData.email
+
+        newWish.user = user
+
+        this.$firebaseRefs.wishes.push(newWish)
+        .then(() => {
+          this.$root.$emit('addInfo', 'Choix sauvegardé !')
+        })
+        .catch((error) => { this.$root.$emit('addError', error.message) })
+      }
     }
   },
   computed: {
