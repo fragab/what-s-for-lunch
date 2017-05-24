@@ -10,7 +10,7 @@ npm install
 
 # set firebase configuration
 cp src/api/firebase.js.dist src/api/firebase.js
-edit src/api/firebase.js to set your firebase config
+# edit src/api/firebase.js to set your firebase config
 
 # serve with hot reload at localhost:8080
 npm run dev
