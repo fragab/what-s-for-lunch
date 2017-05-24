@@ -6,6 +6,7 @@ import Signup from '@/components/Signup'
 import Profile from '@/components/Profile'
 import Restaurant from '@/components/Restaurant'
 import Result from '@/components/Result'
+import Stats from '@/components/Stats'
 
 Vue.use(Router)
 
@@ -40,6 +41,11 @@ export default new Router({
       path: '/restaurant',
       name: 'restaurant',
       component: Restaurant
+    },
+    {
+      path: '/stats',
+      name: 'stats',
+      component: Stats
     }
   ],
   linkActiveClass: 'is-active'
