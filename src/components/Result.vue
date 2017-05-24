@@ -15,7 +15,7 @@
             <ol>
               <template v-for="wish in result">
               <li>
-                {{ wish.user.displayName }} - {{ wish.restaurant.name }} - {{ wish.place }} <button v-if="!canVote()" class="button is-primary" @click="addVote(wish)">J'suis ben d'accord</button>
+                {{ wish.user.displayName }} - {{ wish.restaurant.name }} - {{ wish.place }} <button v-if="canVote()" class="button is-primary" @click="addVote(wish)">J'suis ben d'accord</button>
               </li>
               </template>
             </ol>
@@ -74,9 +74,9 @@ export default {
       return moment().format('d') === '1'
     },
     canVote () {
-      return this.userData && this.wishes.filter(
+      return this.userData != null && this.wishes.filter(
         wish => { return wish.user.uid === this.userData.uid }
-      ).length > 0
+      ).length === 0
     },
     addVote (wish) {
       if (this.canVote()) {
