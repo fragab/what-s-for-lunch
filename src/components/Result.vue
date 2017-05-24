@@ -79,7 +79,7 @@ export default {
       ).length === 0
     },
     addVote (wish) {
-      if (this.canVote()) {
+      if (!this.canVote()) {
         this.$root.$emit('addError', 'Tu n\'es pas connecté ou tu as déjà voté !')
         return false
       }
