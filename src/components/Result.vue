@@ -71,7 +71,7 @@ export default {
   },
   methods: {
     isMonday () {
-      return moment().format('d') === '1'
+      return false
     },
     canVote () {
       return this.userData != null && this.wishes.filter(

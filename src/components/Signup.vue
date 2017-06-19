@@ -76,6 +76,18 @@ export default {
       app.auth().createUserWithEmailAndPassword(this.email, this.password)
       .then(() => this.signInWithPassword())
       .catch((error) => { this.$root.$emit('addError', error.message) })
+    },
+    signInWithPassword () {
+      this.isSigningIn = true
+      app.auth().signInWithEmailAndPassword(this.email, this.password)
+      .then((userData) => {
+        this.onSignedIn(userData)
+      })
+      .catch((error) => {
+        this.$root.$emit('addError', error.message)
+        this.isSigningIn = false
+      })
+      this.password = ''
     }
   }
 }

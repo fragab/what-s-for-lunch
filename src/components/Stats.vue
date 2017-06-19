@@ -6,9 +6,13 @@
           <div class="content">
             <h1 class="has-text-centered">Stats</h1>
           </div>
-          <ul>
-            <li v-for="restaurant in result">{{ restaurant[1] }} : {{ restaurant[0] }}</li>
-          </ul>
+          <restaurants-chart
+            :chart-data="result"
+            :options="{responsive: true, maintainAspectRatio: true}"
+            :width="1280"
+            :height="500"
+            >
+           </restaurants-chart>
         </div>
       </div>
     </div>
@@ -17,6 +21,7 @@
 
 <script>
 import firebaseApi from '../api/firebase.js'
+import RestaurantsChart from './RestaurantsChart.vue'
 
 var moment = require('moment')
 
@@ -30,6 +35,9 @@ export default {
       loading: true,
       userData: null
     }
+  },
+  components: {
+    RestaurantsChart
   },
   firebase () {
     return {
@@ -57,7 +65,6 @@ export default {
                 acc[day[key].restaurant.name] = 1
               }
               acc[day[key].restaurant.name] += 1
-              console.log(day[key].restaurant.name)
             }
           }
           return acc
@@ -70,7 +77,23 @@ export default {
       sortable.sort(function (a, b) {
         return b[1] - a[1]
       })
-      return sortable
+
+      return sortable.reduce(
+        (acc, data) => {
+          acc['labels'].push(data[0])
+          acc['datasets'][0]['data'].push(data[1])
+          return acc
+        }, {
+          labels: [],
+          datasets: [
+            {
+              label: 'Votes',
+              backgroundColor: '#aeca39',
+              data: []
+            }
+          ]
+        }
+      )
     }
   },
   filters: {

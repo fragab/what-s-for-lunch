@@ -12,9 +12,11 @@
   "dependencies": {
     "animejs": "^2.0.2",
     "bulma": "^0.4.0",
+    "chart.js": "^2.6.0",
     "firebase": "^3.7.4",
     "moment": "^2.18.1",
     "vue": "^2.2.2",
+    "vue-chartjs": "^2.6.5",
     "vue-router": "^2.2.0",
     "vuefire": "^1.4.0"
   },
